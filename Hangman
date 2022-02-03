@@ -1,0 +1,146 @@
+import os
+import random
+
+#cargamos archivo
+os.chdir(r'D:\Documentos\Spyder')
+archivo = open('palabras juego.txt','r')
+listadepalabra = archivo.read().split()
+
+#Escogemos palabra
+numero = random.randint(1,len(listadepalabra))
+palabra = listadepalabra[numero-1]
+
+def imprenta(error,rellenar,acumulador): 
+    #dibujo
+    p1 = ['#','#','#',' ']
+    p2 = ['#',' ',' ',' ']
+    p3 = ['#',' ',' ',' ']
+    p4 = ['#',' ',' ',' ']
+    p5 = ['#',' ',' ',' ']
+    p6 = ['#',' ',' ',' ']
+    p7 = ['=',' ',' ',' ']
+    
+    listado = [p1,p2,p3,p4,p5,p6,p7]
+    
+    if error == 0:
+        pass
+    elif error == 1:
+        p2[2] = '|'
+    elif error == 2:
+        p2[2] = '|'
+        p3[2] = 'O'
+    elif error == 3:
+        p2[2] = '|'
+        p3[2] = 'O'
+        p4[2] = '|'        
+    elif error == 4:
+        p2[2] = '|'
+        p3[2] = 'O'
+        p4[2] = '|'
+        p4[1] = '('
+    elif error == 5:
+        p2[2] = '|'
+        p3[2] = 'O'
+        p4[2] = '|'        
+        p4[1] = '('
+        p4[3] = ')'
+    elif error == 6:
+        p2[2] = '|'
+        p3[2] = 'O'
+        p4[2] = '|'        
+        p4[1] = '('
+        p4[3] = ')'
+        p5[1] = '/'
+    elif error == 7:
+        p2[2] = '|'
+        p3[2] = 'O'
+        p4[2] = '|'        
+        p4[1] = '('
+        p4[3] = ')'
+        p5[1] = '/'
+        p5[2] = '/'
+    
+    for i in listado:
+        print(i[0]+i[1]+i[2]+i[3])
+        
+    k = ''    
+    for i in rellenar:
+        k = k + ' ' + i
+    print('\n',k,'\n\nLas letras usadas son: ', acumulador)
+
+def posiciones(palabra,letra):
+    lista = []
+    nueva = list(palabra)
+
+    for i in range(palabra.count(letra)):
+        
+        n = nueva.index(letra)
+        lista.append(n)
+        nueva[n] = '.'
+        valorencontrado = palabra.count(letra)
+        
+    return (lista,valorencontrado)
+    
+#presentacion del juego
+def juegoactivo(nombre,palabra):
+    print(f'\nBienvenido {nombre} al juego!!!')
+    letras = list(palabra)
+    rellenar = []
+    for i in letras:
+        rellenar.append('_')
+    activo = 1
+    error = 0
+    encontrado = 0
+    acumulador = ''
+    y = 0
+    
+    
+    #ejecucion
+    while activo == 1:
+        letra = input(f'\n Señor {nombre} por favor ingrese una letra: ')
+        
+        if letra in acumulador:
+            print(f'\nVamos {nombre}, ya has usado esta letra, por favor elige otra.')
+        else:
+        
+            if y == 0:
+                acumulador = acumulador + letra
+                y = 1 
+            else:
+                acumulador = acumulador + ', ' + letra
+            lista = []
+            if letra in letras:
+                if palabra.count(letra) > 1:
+
+                    lista, valorencontrado = posiciones(palabra,letra)
+                    encontrado = encontrado + valorencontrado
+                    for t in lista:
+                        rellenar[t] = letra
+
+                else:
+                    posicion = letras.index(letra)
+                    lista.append(posicion)
+                    for w in lista:
+                        rellenar[w] = letra
+                    #rellenar[posicion] = letra
+                    encontrado += 1
+            else:
+                error += 1        
+        
+            imprenta(error,rellenar,acumulador)
+        
+        if error == 7:
+            print(f'\nExcelente juego, completaste {encontrado} letras, sigue intentando')
+            break
+        elif rellenar.count('_') == 0:
+            print(f'\nBien hecho {nombre}, has tenido una victoria, felicidades.')
+            break
+
+#Iniciacion
+nombre = input('Buenas tardes, espero se encuentre muy bien. \nDigite su nombre por favor: ')
+respuesta = input('Desea jugar el dia de hoy Hagman?\n')
+
+if respuesta.lower() == 'si':
+    juegoactivo(nombre,palabra)
+else:
+    print('\nEsta bien, tenga buen dia.')
